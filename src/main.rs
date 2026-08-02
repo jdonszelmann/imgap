@@ -300,7 +300,7 @@ fn draw_status_bar(
     write!(w, "\x1b[{};1H\x1b[2K", help_row + 1)?;
     write!(
         w,
-        "mode: \x1b[1m{}\x1b[0m    \x1b[2m←/→ slider   m mode   q quit\x1b[0m",
+        "mode: \x1b[1m{}\x1b[0m    \x1b[2m←/→ slider   m mode   q quit (succesful) Q quit (unsuccesfuunsuccesfull)\x1b[0m",
         mode.label()
     )?;
     Ok(())
@@ -582,6 +582,8 @@ fn run_interactive(
     let step = 0.02_f32;
 
     let mut quit = false;
+    let mut exit_code = 0;
+
     let result: io::Result<()> = (|| {
         while !quit {
             if dirty {
@@ -613,11 +615,17 @@ fn run_interactive(
             loop {
                 match event::read()? {
                     Event::Key(k) => match k.code {
+                        KeyCode::Char('q') if k.modifiers.contains(KeyModifiers::SHIFT) => {
+                            exit_code = 1;
+                            quit = true;
+                            break;
+                        }
                         KeyCode::Char('q') | KeyCode::Esc => {
                             quit = true;
                             break;
                         }
                         KeyCode::Char('c') if k.modifiers.contains(KeyModifiers::CONTROL) => {
+                            exit_code = 1;
                             quit = true;
                             break;
                         }
