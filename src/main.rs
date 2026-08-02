@@ -616,7 +616,7 @@ fn run_interactive(
             loop {
                 match event::read()? {
                     Event::Key(k) => match k.code {
-                        KeyCode::Char('q') if k.modifiers.contains(KeyModifiers::SHIFT) => {
+                        KeyCode::Char('Q') => {
                             exit_code = 1;
                             quit = true;
                             break;
